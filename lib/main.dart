@@ -1,25 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences_example/app/theme_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shared_preferences_example/app/app_constants.dart';
 import 'package:shared_preferences_example/module/home_screen.dart';
 
-void main() {
-  runApp(MyApp());
+late SharedPreferences prefs;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  prefs = await SharedPreferences.getInstance();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  MyApp({super.key});
+  const MyApp({super.key});
 
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'Flutter Demo',
-      themeMode: ThemeService.instance.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+      debugShowCheckedModeBanner: false,
+      title: 'Theme Demo',
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
       home: HomeScreen(),
+      themeMode: prefs.getBool(AppConstants.isDark) ?? false
+          ? ThemeMode.dark
+          : ThemeMode.light,
     );
   }
 }
